@@ -94,19 +94,18 @@ func grahphiQLHTML(path: PathComponent, credentialMode: GraphiQLCredentialMode) 
       import { createGraphiQLFetcher } from '@graphiql/toolkit';
       import { explorerPlugin } from '@graphiql/plugin-explorer';
 
-      const fetcher = async graphQLParams => {
-        const response = await fetch(
-          '\(path)',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(graphQLParams),
-            credentials: '\(credentialMode.rawValue)',
+      const fetcher = async (graphQLParams, opts) => {
+        const response = await fetch('\(path)', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            ...opts?.headers, // 🔥 THIS LINE FIXES IT
           },
-        );
+          body: JSON.stringify(graphQLParams),
+          credentials: '\(credentialMode.rawValue)',
+        });
+
         return response.json();
       };
       const explorer = explorerPlugin();
